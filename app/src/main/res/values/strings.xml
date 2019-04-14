@@ -1,0 +1,8 @@
+<resources>
+    <string name="app_name">Напоминалка</string>
+    <string name="name_list">Названия списка</string>
+    <string name="app">Приложение для хранение задач</string>
+    <string name="dela">Дела</string>
+    <string name="delete">Удалить</string>
+    <string name="task_delete">task_delete</string>
+</resources>
