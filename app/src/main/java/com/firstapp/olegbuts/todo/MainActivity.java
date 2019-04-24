@@ -14,6 +14,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.animation.AnimationUtils;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -29,6 +30,7 @@ public class MainActivity extends AppCompatActivity {
     private EditText field_text;
     private SharedPreferences prefs;
     private String text_for_delete;
+    private Button add_for_task;
 
 
     @Override
@@ -42,14 +44,40 @@ public class MainActivity extends AppCompatActivity {
         dbHelper = new DataBase(this);
         all_tasks = findViewById(R.id.tasks_list);
         field_text = findViewById(R.id.list_name);
+        add_for_task = findViewById(R.id.add_new_task);
 
         prefs = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());//обращаемся к класу и в этой сцене берем getAplicationcontext(получаем все сохраненные данные)
         String name_list = prefs.getString("list_name", "");
         field_text.setText(name_list);//и в поле для ввода вписываем текст который сохранен в name_list
         changeTextAction();//вызываем функцию changeAction
-        loadAllTasks();//перезагружаем список дел
+        loadAllTasks();
+        //перезагружаем список дел
+        add_for_task.setOnClickListener(new View.OnClickListener() {
+                                            @Override
+                                            public void onClick(View v) {
+                                                //создаем константу для редакртирования текста
+                                               // AlertDialog dialog = new DialogInterface//создаем диалоговое окно
+                                                        //.setTitle("Добавление нового задания")
+                                                       // .setMessage("Чтобы вы хотели добавить?")
+                                                       // .setView(userTaskGet)//добавляем в его поле для ввода
+                                                        //.setPositiveButton("Добавить", new DialogInterface.OnClickListener() {//добавляем кнопку добавить
+                                                          //  @Override
+                                                           // public void onClick(DialogInterface dialog, int which) {
+                                                            //    String task = String.valueOf(userTaskGet.getText());//конвертируем введенные данные в строки
+                                                            //    dbHelper.insertData(task);//добавляем в базу данных новую задачу при помощи ensertdata,которая у нас есть в датабаз
+                                                             //   loadAllTasks();//обновляем наш список
+                                                         //   }
+                                                      //  })
+                                                        //.setNegativeButton("Ничего", null)
+                                                       //.create();
+                                               // dialog.show();
 
+
+                                            }
+                                        }
+        );
     }
+
 
     private void changeTextAction() {//реализуем его. метод нужен для того чтобы при выходе из приложения введенные данные пользователем сохранялись при выходе
         field_text.addTextChangedListener(new TextWatcher() {//обработчик событий. после создания создаються 3 метода
@@ -60,9 +88,9 @@ public class MainActivity extends AppCompatActivity {
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {//когда символ пишем
-SharedPreferences.Editor editPrefs = prefs.edit();//через метод записываем новое значение ,называем ее editPrefs и вводдим prefs.edit
-editPrefs.putString("list_name", String.valueOf(field_text.getText()));//метод позволяет установить в определьлонную переменную некое значение,берем данные с поля, и каждый раз когда пользователь вводит данные данные сохранялись при выходе
-editPrefs.apply();//сохраняем(синхронизируем данные)
+                SharedPreferences.Editor editPrefs = prefs.edit();//через метод записываем новое значение ,называем ее editPrefs и вводдим prefs.edit
+                editPrefs.putString("list_name", String.valueOf(field_text.getText()));//метод позволяет установить в определьлонную переменную некое значение,берем данные с поля, и каждый раз когда пользователь вводит данные данные сохранялись при выходе
+                editPrefs.apply();//сохраняем(синхронизируем данные)
             }
 
             @Override
@@ -85,46 +113,13 @@ editPrefs.apply();//сохраняем(синхронизируем данные
         }
     }
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {//метод позволяющий перезаписать меню(тоесть добавляем кнопку плюс
-        getMenuInflater().inflate(R.menu.menu, menu);
 
-        Drawable icon = menu.getItem(0).getIcon();
-        icon.mutate();
-        return super.onCreateOptionsMenu(menu);
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        if (item.getItemId() == R.id.add_new_task) {//проверяем условие на какую кнопку мы нажали,если это кнопка add new task
-            final EditText userTaskGet = new EditText((this));//создаем константу для редакртирования текста
-            AlertDialog dialog = new AlertDialog.Builder(this)//создаем диалоговое окно
-                    .setTitle("Добавление нового задания")
-                    .setMessage("Чтобы вы хотели добавить?")
-                    .setView(userTaskGet)//добавляем в его поле для ввода
-                    .setPositiveButton("Добавить", new DialogInterface.OnClickListener() {//добавляем кнопку добавить
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            String task = String.valueOf(userTaskGet.getText());//конвертируем введенные данные в строки
-                            dbHelper.insertData(task);//добавляем в базу данных новую задачу при помощи ensertdata,которая у нас есть в датабаз
-                            loadAllTasks();//обновляем наш список
-                        }
-                    })
-                    .setNegativeButton("Ничего", null)
-                    .create();
-            dialog.show();
-            return true;//возвращаемся
-
-
-        }
-        return super.onOptionsItemSelected(item);
-    }
     public void deleteTask(View view) {//метод для обработки кнопк удалить
         View parent = (View)view.getParent();//берем родительский парент тоесть нашу строку
         TextView txt_task = parent.findViewById(R.id.txt_task);//находим нашу строку по ид
         text_for_delete = String.valueOf(txt_task.getText());//конвертируем это в строки
 
-        parent.animate().alpha(0).setDuration(800).withEndAction(new Runnable() {//проигрываем анимацию родительского обьекта и когда она закончиться то запускаем поток данных, который и удаляет нашу запись
+        parent.animate().alpha(0).setDuration(600).withEndAction(new Runnable() {//проигрываем анимацию родительского обьекта и когда она закончиться то запускаем поток данных, который и удаляет нашу запись
             @Override
             public void run() {
                 dbHelper.deleteData(text_for_delete);//ищем запись и удаляем
@@ -133,4 +128,5 @@ editPrefs.apply();//сохраняем(синхронизируем данные
         });
 
     }
+
 }

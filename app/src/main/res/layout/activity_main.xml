@@ -1,11 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:focusableInTouchMode="true"
     android:background="@drawable/img2"
     tools:context=".MainActivity">
+
 
     <EditText
         android:id="@+id/list_name"
@@ -26,6 +28,18 @@
         android:textColor="#000000"
         android:textSize="20sp" />
 
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/add_new_task"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentBottom="true"
+        android:layout_marginEnd="23dp"
+        android:layout_marginBottom="39dp"
+        android:clickable="true"
+        android:focusable="true"
+        app:backgroundTint="#0000"
+        app:srcCompat="@drawable/ic_add_alarm" />
 
     <TextView
         android:id="@+id/info_app"
